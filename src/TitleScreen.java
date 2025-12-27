@@ -1,4 +1,7 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class TitleScreen {
 
@@ -17,6 +20,19 @@ public class TitleScreen {
 
         mainPanel.setBounds(0, 0, UI.screenWidth, UI.screenHeight);
 
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/logo.png"));
+            BufferedImage resizedIcon = ImageResizer.resizeImage(image, 300, 300);
+            ImageIcon icon = new ImageIcon(resizedIcon);
+
+            JLabel picLabel = new JLabel(icon);
+            picLabel.setBounds(UI.screenWidth/ 3, UI.screenHeight / 4, 300, 300);
+
+            mainPanel.add(picLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //Create Jlabel, set the font and text and position
         JLabel textArea = new JLabel();
         textArea.setFont(UI.mainMenuFont);
@@ -31,7 +47,7 @@ public class TitleScreen {
         startButton.setFont(UI.buttonFont);
         startButton.setFocusable(false);
         startButton.addActionListener(startFunction);
-        startButton.setBounds((UI.screenWidth / 2) - 50, UI.screenHeight / 2, 100, 30);
+        startButton.setBounds((UI.screenWidth / 2) - 50, UI.screenHeight - 150, 100, 30);
         startButton.setHorizontalAlignment(SwingConstants.CENTER);
         mainPanel.add(startButton);
 
