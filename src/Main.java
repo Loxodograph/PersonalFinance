@@ -1,6 +1,6 @@
 void main() {
     UserInterface userInterface = new UserInterface();
-    userInterface.draw();
+    userInterface.drawTitle();
 
 }
 
