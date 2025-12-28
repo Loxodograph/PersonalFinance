@@ -3,13 +3,16 @@ import java.awt.event.ActionListener;
 
 public class AddButtonFunction implements ActionListener {
     public NewExpenseFrame newExpenseFrame;
-    public AddButtonFunction(NewExpenseFrame newExpenseFrame) {
+    public MainScreen mainScreen;
+    public AddButtonFunction(NewExpenseFrame newExpenseFrame, MainScreen mainScreen) {
         this.newExpenseFrame = newExpenseFrame;
-
+        this.mainScreen = mainScreen;
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        newExpenseFrame.createFrame();
+        if (mainScreen.state == State.MAIN) {
+            newExpenseFrame.createFrame();
+        }
 
     }
 }

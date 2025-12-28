@@ -33,9 +33,9 @@ public class EditButtonSubmit implements ActionListener {
         mainScreen.additionalFrame.dispose();
         mainScreen.centerPanel.removeAll();
         if (!mainScreen.filteredList.isEmpty()) {
-            mainScreen.drawCenterPanel(mainScreen.filteredList);
+            mainScreen.drawMainCenterPanel(mainScreen.filteredList);
         } else {
-            mainScreen.drawCenterPanel(ExpenseRepository.dataList);
+            mainScreen.drawMainCenterPanel(ExpenseRepository.dataList);
         }
 
         UI.jframe.revalidate();

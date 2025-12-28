@@ -11,7 +11,9 @@ public class EditButtonFunction implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        createEditFrame.createEditFrame();
+        if (mainScreen.state == State.MAIN) {
+            createEditFrame.createEditFrame();
+        }
 
     }
 }

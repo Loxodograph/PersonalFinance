@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class MainScreen {
     public Dimension maximumTextSize = new Dimension(100, 20);
     public Insets insets = new Insets(0, 0, 0, 0);
     final private ActionListener deleteExpenseFunction = new DeleteExpenseFunction(this);
+    public State state;
     FilterFrame filterFrame = new FilterFrame(this);
     FilterDateFrame filterDateFrame = new FilterDateFrame(this);
     JPanel mainPanel = new JPanel(new BorderLayout());
@@ -28,7 +30,8 @@ public class MainScreen {
     int buttonHeight = 30;
     int buttonPadding = 20;
     int buttonStartX = 100;
-
+    public String[] categories = {"Food", "Gym", "Clothes", "Utilities", "Internet", "Telephone", "Rent", "Transportation", "Entertainment", "Other"};
+    public String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public MainScreen(UserInterface UI) {
         this.UI = UI;
@@ -60,7 +63,7 @@ public class MainScreen {
         //draw borders
         drawHeader();
         drawSideBar();
-        drawCenterPanel(ExpenseRepository.dataList);
+        drawMainCenterPanel(ExpenseRepository.dataList);
 
         //add mainPanel to frame
         UI.jframe.add(mainPanel);
@@ -68,9 +71,8 @@ public class MainScreen {
         UI.jframe.repaint();
     }
 
-    public JTable drawTable(ArrayList<Expense> dataList) {
+    public JTable drawTable(ArrayList<Expense> dataList, String[] columnNames) {
         //set up column names of table
-        String[] columnNames = {"Category", "Amount", "Month", "Note"};
 
         //initialize dataobject, length of which is size of our expense list
         dataObject = new Object[dataList.size()][4];
@@ -80,7 +82,7 @@ public class MainScreen {
             for (int j = 0; j < 4; j++) {
                 Object[] object = dataList.get(i).toObject();
                 dataObject[i][j] = object[j];
-
+                System.out.println(dataObject[i][j]);
             }
         }
 
@@ -88,12 +90,75 @@ public class MainScreen {
 
     }
 
-    public void drawCenterPanel(ArrayList<Expense> dataList) {
-        //Centerpanel layout
+    public void drawMonthlyCenterPanel(ArrayList<Expense> dataList) {
+        state = State.MONTHLY;
         centerPanel.setLayout(new BorderLayout());
+        String[] columnNames = {"Month", "Amount"};
+        String[][] dataObject = new String[months.length][2];
 
+        for (int i = 0; i < months.length; i++) {
+            // for month in month
+            double totalSum = 0;
+            for (int j = 0; j < dataList.size(); j++) {
+                //for expense in datalist
+                if (months[i].equals(dataList.get(j).getMonth())) {
+                    totalSum += dataList.get(j).getAmount();
+                }
+            }
+            dataObject[i][0] = months[i];
+            if (totalSum > 0) {
+                dataObject[i][1] = String.valueOf(totalSum);
+            } else {
+                dataObject[i][1] = "0";
+            }
+        }
+        JTable table = new JTable(dataObject, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+
+        //add to centerPanel
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    public void drawSummaryCenterPanel(ArrayList<Expense> dataList) {
+        state = State.SUMMARY;
+        centerPanel.setLayout(new BorderLayout());
+        String[] columnNames = {"Category", "Amount"};
+        String[][] dataObject = new String[categories.length][2];
+
+        for (int i = 0; i < categories.length; i++) {
+            // for category in categories
+            double totalSum = 0;
+            for (int j = 0; j < dataList.size(); j++) {
+                //for expense in datalist
+                if (categories[i].equals(dataList.get(j).getCategory())) {
+                    totalSum += dataList.get(j).getAmount();
+                }
+            }
+            dataObject[i][0] = categories[i];
+            if (totalSum > 0) {
+                dataObject[i][1] = String.valueOf(totalSum);
+            } else {
+                dataObject[i][1] = "0";
+            }
+        }
+        JTable table = new JTable(dataObject, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+
+        //add to centerPanel
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+
+
+    }
+
+    public void drawMainCenterPanel(ArrayList<Expense> dataList) {
+        //Centerpanel layout
+        state = State.MAIN;
+        centerPanel.setLayout(new BorderLayout());
+        String[] columnNames = {"Category", "Amount", "Month", "Note"};
         //Display dataObject in a table
-        table = drawTable(dataList);
+        table = drawTable(dataList, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
 
@@ -119,6 +184,38 @@ public class MainScreen {
         mainView.setFont(buttonFont);
         summaryView.setFont(buttonFont);
         monthlyView.setFont(buttonFont);
+
+        //action listeners
+
+        mainView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerPanel.removeAll();
+                drawMainCenterPanel(ExpenseRepository.dataList);
+                UI.jframe.revalidate();
+                UI.jframe.repaint();
+            }
+        });
+
+        monthlyView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerPanel.removeAll();
+                drawMonthlyCenterPanel(ExpenseRepository.dataList);
+                UI.jframe.revalidate();
+                UI.jframe.repaint();
+            }
+        });
+
+        summaryView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerPanel.removeAll();
+                drawSummaryCenterPanel(ExpenseRepository.dataList);
+                UI.jframe.revalidate();
+                UI.jframe.repaint();
+            }
+        });
 
 
         //position buttons and add to main panel
@@ -165,27 +262,38 @@ public class MainScreen {
         resetFilter.setRolloverEnabled(false);
 
         //add action listeners
-        addExpense.addActionListener(new AddButtonFunction(new NewExpenseFrame(UI)));
+        addExpense.addActionListener(new AddButtonFunction(new NewExpenseFrame(UI), this));
         editExpense.addActionListener(new EditButtonFunction(new CreateEditFrame(UI, this), this));
 
         //Delete Expense Action Listener
         deleteExpense.addActionListener(deleteExpenseFunction);
 
         //Filter Category Action Listener
-        filterCategory.addActionListener(e -> filterFrame.createFrame());
+        filterCategory.addActionListener(e -> {
+            if (state == State.MAIN) {
+                filterFrame.createFrame();
+            }
+        });
 
         //resetFilter action listener
 
         resetFilter.addActionListener(_ -> {
-            centerPanel.removeAll();
+            if (state == State.MAIN) {
+                centerPanel.removeAll();
 
-            drawCenterPanel(ExpenseRepository.dataList);
-            UI.jframe.revalidate();
-            UI.jframe.repaint();
+                drawMainCenterPanel(ExpenseRepository.dataList);
+                UI.jframe.revalidate();
+                UI.jframe.repaint();
+            }
+
         });
 
         //filterDate action listener
-        filterDate.addActionListener(e -> filterDateFrame.createFrame());
+        filterDate.addActionListener(e -> {
+            if (state == State.MAIN) {
+                filterDateFrame.createFrame();
+            }
+        });
 
         //Define Dimensions
         Insets insets = new Insets(0, 0, 0, 0);
@@ -239,7 +347,6 @@ public class MainScreen {
         sideBarPanel.add(filterDate);
 
 
-
         sideBarPanel.add(Box.createVerticalStrut(10));
         sideBarPanel.add(resetFilter);
 
@@ -247,7 +354,6 @@ public class MainScreen {
     }
 
     public ArrayList<JPanel> createNewFrame() {
-
 
 
         additionalFrame = new JFrame();

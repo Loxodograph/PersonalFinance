@@ -52,7 +52,7 @@ public class FilterFrame {
                 mainScreen.centerPanel.removeAll();
 
 
-                mainScreen.drawCenterPanel(filteredList);
+                mainScreen.drawMainCenterPanel(filteredList);
                 mainScreen.UI.jframe.revalidate();
                 mainScreen.UI.jframe.repaint();
 

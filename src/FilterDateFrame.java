@@ -51,7 +51,6 @@ public class FilterDateFrame {
             cancel.setMargin(mainScreen.insets);
             submit.addActionListener(e -> {
                 String month = String.valueOf(monthComboBox.getSelectedItem());
-                System.out.println(month);
                 ArrayList<Expense> filteredList = new ArrayList<>();
                 for (Expense expense : ExpenseRepository.dataList) {
                     if (expense.getMonth().equals(month)) {
@@ -61,7 +60,7 @@ public class FilterDateFrame {
                 mainScreen.centerPanel.removeAll();
                 mainScreen.filteredList = filteredList;
 
-                mainScreen.drawCenterPanel(filteredList);
+                mainScreen.drawMainCenterPanel(filteredList);
                 mainScreen.UI.jframe.revalidate();
                 mainScreen.UI.jframe.repaint();
 
