@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 
 public class CreateEditFrame {
-    public JTextField categoryTextArea;
     public JTextField amountTextLabel;
     public JTextField noteTextLabel;
     public MainScreen mainScreen;

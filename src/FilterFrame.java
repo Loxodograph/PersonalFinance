@@ -58,24 +58,7 @@ public class FilterFrame {
 
                 mainScreen.additionalFrame.dispose();
             });
-            cancel.addActionListener(_ -> mainScreen.additionalFrame.dispose());
-
-            buttonPanel.add(submit);
-            buttonPanel.add(cancel);
-
-
-            inputPanel.add(categoryLabel);
-            inputPanel.add(categoryComboBox);
-
-            mainPanel.add(inputPanel);
-            mainPanel.add(buttonPanel);
-
-            mainScreen.additionalFrame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-            mainScreen.additionalFrame.setSize(400, 100);
-            mainScreen.additionalFrame.setLocationByPlatform(true);
-            mainScreen.additionalFrame.setVisible(true);
-            mainScreen.additionalFrame.setResizable(false);
-            mainScreen.additionalFrame.setLocationRelativeTo(null);
+            FilterDateFrame.addToScreen(mainPanel, inputPanel, buttonPanel, categoryLabel, submit, cancel, mainScreen, categoryComboBox);
         });
 
     }

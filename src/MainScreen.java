@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class MainScreen {
     public JTable drawTable(ArrayList<Expense> dataList, String[] columnNames) {
         //set up column names of table
 
-        //initialize dataobject, length of which is size of our expense list
+        //initialize dataObject, length of which is size of our expense list
         dataObject = new Object[dataList.size()][4];
         //iterate through expense list
         //add expense information to dataObject
@@ -98,10 +97,10 @@ public class MainScreen {
         for (int i = 0; i < months.length; i++) {
             // for month in month
             double totalSum = 0;
-            for (int j = 0; j < dataList.size(); j++) {
+            for (Expense expense : dataList) {
                 //for expense in datalist
-                if (months[i].equals(dataList.get(j).getMonth())) {
-                    totalSum += dataList.get(j).getAmount();
+                if (months[i].equals(expense.getMonth())) {
+                    totalSum += expense.getAmount();
                 }
             }
             dataObject[i][0] = months[i];
@@ -128,10 +127,10 @@ public class MainScreen {
         for (int i = 0; i < categories.length; i++) {
             // for category in categories
             double totalSum = 0;
-            for (int j = 0; j < dataList.size(); j++) {
+            for (Expense expense : dataList) {
                 //for expense in datalist
-                if (categories[i].equals(dataList.get(j).getCategory())) {
-                    totalSum += dataList.get(j).getAmount();
+                if (categories[i].equals(expense.getCategory())) {
+                    totalSum += expense.getAmount();
                 }
             }
             dataObject[i][0] = categories[i];
@@ -152,7 +151,7 @@ public class MainScreen {
     }
 
     public void drawMainCenterPanel(ArrayList<Expense> dataList) {
-        //Centerpanel layout
+        //CenterPanel layout
         state = State.MAIN;
         centerPanel.setLayout(new BorderLayout());
         String[] columnNames = {"Category", "Amount", "Month", "Note"};
@@ -186,34 +185,25 @@ public class MainScreen {
 
         //action listeners
 
-        mainView.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                centerPanel.removeAll();
-                drawMainCenterPanel(ExpenseRepository.dataList);
-                UI.jframe.revalidate();
-                UI.jframe.repaint();
-            }
+        mainView.addActionListener(_ -> {
+            centerPanel.removeAll();
+            drawMainCenterPanel(ExpenseRepository.dataList);
+            UI.jframe.revalidate();
+            UI.jframe.repaint();
         });
 
-        monthlyView.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                centerPanel.removeAll();
-                drawMonthlyCenterPanel(ExpenseRepository.dataList);
-                UI.jframe.revalidate();
-                UI.jframe.repaint();
-            }
+        monthlyView.addActionListener(_ -> {
+            centerPanel.removeAll();
+            drawMonthlyCenterPanel(ExpenseRepository.dataList);
+            UI.jframe.revalidate();
+            UI.jframe.repaint();
         });
 
-        summaryView.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                centerPanel.removeAll();
-                drawSummaryCenterPanel(ExpenseRepository.dataList);
-                UI.jframe.revalidate();
-                UI.jframe.repaint();
-            }
+        summaryView.addActionListener(_ -> {
+            centerPanel.removeAll();
+            drawSummaryCenterPanel(ExpenseRepository.dataList);
+            UI.jframe.revalidate();
+            UI.jframe.repaint();
         });
 
 
@@ -268,7 +258,7 @@ public class MainScreen {
         deleteExpense.addActionListener(deleteExpenseFunction);
 
         //Filter Category Action Listener
-        filterCategory.addActionListener(e -> {
+        filterCategory.addActionListener(_ -> {
             if (state == State.MAIN) {
                 filterFrame.createFrame();
             }
@@ -288,7 +278,7 @@ public class MainScreen {
         });
 
         //filterDate action listener
-        filterDate.addActionListener(e -> {
+        filterDate.addActionListener(_ -> {
             if (state == State.MAIN) {
                 filterDateFrame.createFrame();
             }

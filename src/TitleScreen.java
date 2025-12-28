@@ -1,7 +1,5 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -33,7 +31,7 @@ public class TitleScreen {
             e.printStackTrace();
         }
 
-        //Create Jlabel, set the font and text and position
+        //Create JLabel, set the font and text and position
         JLabel textArea = new JLabel();
         textArea.setFont(UI.mainMenuFont);
         textArea.setText("Personal Finance Tracker");
@@ -49,7 +47,7 @@ public class TitleScreen {
         startButton.setBounds((UI.screenWidth / 2) - 50, UI.screenHeight - 150, 100, 30);
         startButton.setHorizontalAlignment(SwingConstants.CENTER);
 
-        startButton.addActionListener(e -> UI.drawMainScreen());
+        startButton.addActionListener(_ -> UI.drawMainScreen());
         mainPanel.add(startButton);
 
         UI.jframe.add(mainPanel);

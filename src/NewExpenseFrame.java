@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NewExpenseFrame {
-    public JTextField categoryTextArea;
     public JTextField amountTextLabel;
     public JTextField noteTextLabel;
     public JComboBox<String> monthComboBox;

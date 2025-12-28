@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class FilterDateFrame {
@@ -49,7 +47,7 @@ public class FilterDateFrame {
 
             submit.setMargin(mainScreen.insets);
             cancel.setMargin(mainScreen.insets);
-            submit.addActionListener(e -> {
+            submit.addActionListener(_ -> {
                 String month = String.valueOf(monthComboBox.getSelectedItem());
                 ArrayList<Expense> filteredList = new ArrayList<>();
                 for (Expense expense : ExpenseRepository.dataList) {
@@ -66,25 +64,29 @@ public class FilterDateFrame {
 
                 mainScreen.additionalFrame.dispose();
             });
-            cancel.addActionListener(e -> mainScreen.additionalFrame.dispose());
-
-            buttonPanel.add(submit);
-            buttonPanel.add(cancel);
-
-
-            inputPanel.add(monthLabel);
-            inputPanel.add(monthComboBox);
-
-            mainPanel.add(inputPanel);
-            mainPanel.add(buttonPanel);
-
-            mainScreen.additionalFrame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-            mainScreen.additionalFrame.setSize(400, 100);
-            mainScreen.additionalFrame.setLocationByPlatform(true);
-            mainScreen.additionalFrame.setVisible(true);
-            mainScreen.additionalFrame.setResizable(false);
-            mainScreen.additionalFrame.setLocationRelativeTo(null);
+            addToScreen(mainPanel, inputPanel, buttonPanel, monthLabel, submit, cancel, mainScreen, monthComboBox);
         });
 
+    }
+
+    static void addToScreen(JPanel mainPanel, JPanel inputPanel, JPanel buttonPanel, JLabel monthLabel, JButton submit, JButton cancel, MainScreen mainScreen, JComboBox<String> monthComboBox) {
+        cancel.addActionListener(_ -> mainScreen.additionalFrame.dispose());
+
+        buttonPanel.add(submit);
+        buttonPanel.add(cancel);
+
+
+        inputPanel.add(monthLabel);
+        inputPanel.add(monthComboBox);
+
+        mainPanel.add(inputPanel);
+        mainPanel.add(buttonPanel);
+
+        mainScreen.additionalFrame.getContentPane().add(BorderLayout.CENTER, mainPanel);
+        mainScreen.additionalFrame.setSize(400, 100);
+        mainScreen.additionalFrame.setLocationByPlatform(true);
+        mainScreen.additionalFrame.setVisible(true);
+        mainScreen.additionalFrame.setResizable(false);
+        mainScreen.additionalFrame.setLocationRelativeTo(null);
     }
 }
