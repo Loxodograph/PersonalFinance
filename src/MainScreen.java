@@ -82,7 +82,6 @@ public class MainScreen {
             for (int j = 0; j < 4; j++) {
                 Object[] object = dataList.get(i).toObject();
                 dataObject[i][j] = object[j];
-                System.out.println(dataObject[i][j]);
             }
         }
 
