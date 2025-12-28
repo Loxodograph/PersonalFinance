@@ -1,10 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FilterFrame {
     public static Font textFieldFont = new Font("Arial", Font.PLAIN, 10);
     public MainScreen mainScreen;
+    public JComboBox<String> categoryComboBox;
+    public String[] categories = {"Food", "Gym", "Clothes", "Utilities", "Internet", "Telephone", "Rent", "Transportation", "Entertainment", "Other"};
+
 
     public FilterFrame(MainScreen mainScreen) {
         this.mainScreen = mainScreen;
@@ -19,11 +23,13 @@ public class FilterFrame {
 
             mainScreen.additionalFrame.setTitle("Filter by Category");
 
+
             JLabel categoryLabel = new JLabel("Category: ");
-            JTextField categoryTextArea = new JTextField(10);
-            categoryTextArea.setPreferredSize(mainScreen.maximumTextSize);
-            categoryTextArea.setMaximumSize(mainScreen.maximumTextSize);
-            categoryTextArea.setFont(textFieldFont);
+            Arrays.sort(categories);
+            categoryComboBox = new JComboBox<>(categories);
+            categoryComboBox.setPreferredSize(mainScreen.maximumTextSize);
+            categoryComboBox.setMaximumSize(mainScreen.maximumTextSize);
+            categoryComboBox.setFont(textFieldFont);
 
             JButton submit = new JButton("Submit");
             JButton cancel = new JButton("Cancel");
@@ -34,7 +40,7 @@ public class FilterFrame {
             submit.setMargin(mainScreen.insets);
             cancel.setMargin(mainScreen.insets);
             submit.addActionListener(_ -> {
-                String category = categoryTextArea.getText();
+                String category = String.valueOf(categoryComboBox.getSelectedItem());
                 ArrayList<Expense> filteredList = new ArrayList<>();
                 for (Expense expense : ExpenseRepository.dataList) {
                     if (expense.getCategory().equals(category)) {
@@ -59,7 +65,7 @@ public class FilterFrame {
 
 
             inputPanel.add(categoryLabel);
-            inputPanel.add(categoryTextArea);
+            inputPanel.add(categoryComboBox);
 
             mainPanel.add(inputPanel);
             mainPanel.add(buttonPanel);
@@ -69,6 +75,7 @@ public class FilterFrame {
             mainScreen.additionalFrame.setLocationByPlatform(true);
             mainScreen.additionalFrame.setVisible(true);
             mainScreen.additionalFrame.setResizable(false);
+            mainScreen.additionalFrame.setLocationRelativeTo(null);
         });
 
     }

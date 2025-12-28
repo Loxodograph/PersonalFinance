@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class CreateEditFrame {
@@ -9,9 +10,12 @@ public class CreateEditFrame {
     public JTextField noteTextLabel;
     public MainScreen mainScreen;
     public JComboBox<String> monthComboBox;
+    public JComboBox<String> categoryComboBox;
     public final UserInterface UI;
     public Font textFieldFont = new Font("Arial", Font.PLAIN, 10);
     public String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    public String[] categories = {"Food", "Gym", "Clothes", "Utilities", "Internet", "Telephone", "Rent", "Transportation", "Entertainment", "Other"};
+
 
     public CreateEditFrame(UserInterface UI, MainScreen mainScreen) {
         this.UI = UI;
@@ -19,7 +23,7 @@ public class CreateEditFrame {
     }
 
     public void createEditFrame() {
-        SubmitEditExpenseFunction submitEditExpenseFunction = new SubmitEditExpenseFunction(this, UI, mainScreen);
+        EditButtonSubmit editButtonSubmit = new EditButtonSubmit(this, UI, mainScreen);
 
         EventQueue.invokeLater(() -> {
             int rowIndex = mainScreen.table.getSelectedRow();
@@ -28,20 +32,14 @@ public class CreateEditFrame {
             JPanel mainPanel = panelArrayList.get(0);
             JPanel inputPanel = panelArrayList.get(1);
             JPanel buttonPanel = panelArrayList.get(2);
-
+            UI.mainScreen.additionalFrame.setLocationRelativeTo(null);
             UI.mainScreen.additionalFrame.setTitle("Edit Expense");
-
+            Arrays.sort(categories);
             JLabel categoryLabel = new JLabel("Category: ");
-            categoryTextArea = new JTextField(10);
-            if (!mainScreen.filteredList.isEmpty()) {
-                categoryTextArea.setText(mainScreen.filteredList.get(rowIndex).getCategory());
-            } else {
-                categoryTextArea.setText(ExpenseRepository.dataList.get(rowIndex).getCategory());
-
-            }
-            categoryTextArea.setPreferredSize(UI.mainScreen.maximumTextSize);
-            categoryTextArea.setMaximumSize(UI.mainScreen.maximumTextSize);
-            categoryTextArea.setFont(textFieldFont);
+            categoryComboBox = new JComboBox<>(categories);
+            categoryComboBox.setPreferredSize(UI.mainScreen.maximumTextSize);
+            categoryComboBox.setMaximumSize(UI.mainScreen.maximumTextSize);
+            categoryComboBox.setFont(textFieldFont);
 
             JLabel amountLabel = new JLabel("Amount: ");
             amountTextLabel = new JTextField(10);
@@ -82,10 +80,10 @@ public class CreateEditFrame {
 
             submit.setMargin(UI.mainScreen.insets);
             cancel.setMargin(UI.mainScreen.insets);
-            submit.addActionListener(submitEditExpenseFunction);
+            submit.addActionListener(editButtonSubmit);
             cancel.addActionListener(_ -> mainScreen.additionalFrame.dispose());
 
-            CreateFrame.DrawNewFrame(mainPanel, inputPanel, buttonPanel, categoryLabel, amountLabel, monthLabel, noteLabel, submit, cancel, categoryTextArea, amountTextLabel, monthComboBox, noteTextLabel, UI);
+            NewExpenseFrame.DrawNewFrame(mainPanel, inputPanel, buttonPanel, categoryLabel, amountLabel, monthLabel, noteLabel, submit, cancel, categoryComboBox, amountTextLabel, monthComboBox, noteTextLabel, UI);
         });
     }
 }

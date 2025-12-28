@@ -1,13 +1,13 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SubmitEditExpenseFunction implements ActionListener {
+public class EditButtonSubmit implements ActionListener {
 
     private final CreateEditFrame expensePanel;
     private final UserInterface UI;
     private final MainScreen mainScreen;
 
-    public SubmitEditExpenseFunction(CreateEditFrame expensePanel, UserInterface UI, MainScreen mainScreen) {
+    public EditButtonSubmit(CreateEditFrame expensePanel, UserInterface UI, MainScreen mainScreen) {
         this.expensePanel = expensePanel;
         this.UI = UI;
         this.mainScreen = mainScreen;
@@ -16,7 +16,7 @@ public class SubmitEditExpenseFunction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Expense selectedExpense;
-        String categoryText = expensePanel.categoryTextArea.getText();
+        String categoryText = String.valueOf(expensePanel.categoryComboBox.getSelectedItem());
         double amount = Double.parseDouble(expensePanel.amountTextLabel.getText());
         String monthText = String.valueOf(expensePanel.monthComboBox.getSelectedItem());
         String noteText = expensePanel.noteTextLabel.getText();

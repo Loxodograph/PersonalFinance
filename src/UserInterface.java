@@ -5,7 +5,7 @@ public class UserInterface {
     JFrame jframe = new JFrame("Personal Finance");
     TitleScreen titleScreen;
     MainScreen mainScreen;
-    CreateFrame createFrame;
+    NewExpenseFrame newExpenseFrame;
     public Font mainMenuFont = new Font("Droid Sans", Font.PLAIN, 50);
     public Font buttonFont = new Font("Droid Sans", Font.PLAIN, 30);
 
@@ -16,15 +16,18 @@ public class UserInterface {
 
         titleScreen = new TitleScreen(this);
         mainScreen = new MainScreen(this);
-        createFrame = new CreateFrame(this);
+        newExpenseFrame = new NewExpenseFrame(this);
     }
     public void drawTitle() {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         jframe.setSize(screenWidth, screenHeight);
         jframe.setResizable(false);
         // Call Title Screen
         titleScreen.draw();
         jframe.setVisible(true);
+        jframe.setLocationRelativeTo(null);
+
     }
 
     public void drawMainScreen() {

@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -166,7 +165,7 @@ public class MainScreen {
         resetFilter.setRolloverEnabled(false);
 
         //add action listeners
-        addExpense.addActionListener(new AddButtonFunction(new CreateFrame(UI)));
+        addExpense.addActionListener(new AddButtonFunction(new NewExpenseFrame(UI)));
         editExpense.addActionListener(new EditButtonFunction(new CreateEditFrame(UI, this), this));
 
         //Delete Expense Action Listener

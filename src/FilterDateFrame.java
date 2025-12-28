@@ -9,6 +9,7 @@ public class FilterDateFrame {
     public static Font textFieldFont = new Font("Arial", Font.PLAIN, 10);
     public MainScreen mainScreen;
     public String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
     public JComboBox<String> monthComboBox;
 
 
@@ -26,13 +27,6 @@ public class FilterDateFrame {
 
             mainScreen.additionalFrame.setTitle("Filter by Date");
 
-            mainScreen.additionalFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
             mainPanel.setOpaque(true);
@@ -90,6 +84,7 @@ public class FilterDateFrame {
             mainScreen.additionalFrame.setLocationByPlatform(true);
             mainScreen.additionalFrame.setVisible(true);
             mainScreen.additionalFrame.setResizable(false);
+            mainScreen.additionalFrame.setLocationRelativeTo(null);
         });
 
     }

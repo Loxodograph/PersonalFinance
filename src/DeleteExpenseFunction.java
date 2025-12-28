@@ -7,6 +7,7 @@ public class DeleteExpenseFunction implements ActionListener {
     public DeleteExpenseFunction(MainScreen mainScreen) {
         this.mainScreen = mainScreen;
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Expense selectedExpense;
@@ -16,15 +17,16 @@ public class DeleteExpenseFunction implements ActionListener {
         } else {
             selectedExpense = ExpenseRepository.dataList.get(rowIndex);
         }
+        if (!mainScreen.filteredList.isEmpty()) {
+            mainScreen.filteredList.remove(selectedExpense);
+            ExpenseRepository.removeExpense(selectedExpense);
+        } else {
+            ExpenseRepository.removeExpense(selectedExpense);
 
-        ExpenseRepository.removeExpense(selectedExpense);
+        }
 
         mainScreen.centerPanel.removeAll();
-        if (!mainScreen.filteredList.isEmpty()) {
-            mainScreen.drawCenterPanel(mainScreen.filteredList);
-        } else {
-            mainScreen.drawCenterPanel(ExpenseRepository.dataList);
-        }
+        mainScreen.drawCenterPanel(mainScreen.filteredList);
 
         mainScreen.UI.jframe.revalidate();
         mainScreen.UI.jframe.repaint();

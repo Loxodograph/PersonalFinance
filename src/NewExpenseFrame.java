@@ -1,22 +1,25 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class CreateFrame {
+public class NewExpenseFrame {
     public JTextField categoryTextArea;
     public JTextField amountTextLabel;
     public JTextField noteTextLabel;
     public JComboBox<String> monthComboBox;
+    public JComboBox<String> categoryComboBox;
     public final UserInterface UI;
     public Font textFieldFont = new Font("Arial", Font.PLAIN, 10);
     public String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    public String[] categories = {"Food", "Gym", "Clothes", "Utilities", "Internet", "Telephone", "Rent", "Transportation", "Entertainment", "Other"};
 
-    public CreateFrame(UserInterface UI) {
+    public NewExpenseFrame(UserInterface UI) {
         this.UI = UI;
     }
 
     public void createFrame() {
-        SubmitNewExpenseFunction submitNewExpenseFunction = new SubmitNewExpenseFunction(this, UI);
+        NewExpenseSubmit newExpenseSubmit = new NewExpenseSubmit(this, UI);
 
         EventQueue.invokeLater(() -> {
 
@@ -24,14 +27,13 @@ public class CreateFrame {
             JPanel mainPanel = panelArrayList.get(0);
             JPanel inputPanel = panelArrayList.get(1);
             JPanel buttonPanel = panelArrayList.get(2);
-
             UI.mainScreen.additionalFrame.setTitle("Add New Expense");
-
+            Arrays.sort(categories);
+            categoryComboBox = new JComboBox<>(categories);
             JLabel categoryLabel = new JLabel("Category: ");
-            categoryTextArea = new JTextField(10);
-            categoryTextArea.setPreferredSize(UI.mainScreen.maximumTextSize);
-            categoryTextArea.setMaximumSize(UI.mainScreen.maximumTextSize);
-            categoryTextArea.setFont(textFieldFont);
+            categoryComboBox.setPreferredSize(UI.mainScreen.maximumTextSize);
+            categoryComboBox.setMaximumSize(UI.mainScreen.maximumTextSize);
+            categoryComboBox.setFont(textFieldFont);
 
             JLabel amountLabel = new JLabel("Amount: ");
             amountTextLabel = new JTextField(10);
@@ -61,14 +63,14 @@ public class CreateFrame {
 
             submit.setMargin(UI.mainScreen.insets);
             cancel.setMargin(UI.mainScreen.insets);
-            submit.addActionListener(submitNewExpenseFunction);
+            submit.addActionListener(newExpenseSubmit);
             cancel.addActionListener(_ -> UI.mainScreen.additionalFrame.dispose());
 
-            DrawNewFrame(mainPanel, inputPanel, buttonPanel, categoryLabel, amountLabel, monthLabel, noteLabel, submit, cancel, categoryTextArea, amountTextLabel, monthComboBox, noteTextLabel, UI);
+            DrawNewFrame(mainPanel, inputPanel, buttonPanel, categoryLabel, amountLabel, monthLabel, noteLabel, submit, cancel, categoryComboBox, amountTextLabel, monthComboBox, noteTextLabel, UI);
         });
     }
 
-    static void DrawNewFrame(JPanel mainPanel, JPanel inputPanel, JPanel buttonPanel, JLabel categoryLabel, JLabel amountLabel, JLabel monthLabel, JLabel noteLabel, JButton submit, JButton cancel, JTextField categoryTextArea, JTextField amountTextLabel, JComboBox<String> monthComboBox, JTextField noteTextLabel, UserInterface ui) {
+    static void DrawNewFrame(JPanel mainPanel, JPanel inputPanel, JPanel buttonPanel, JLabel categoryLabel, JLabel amountLabel, JLabel monthLabel, JLabel noteLabel, JButton submit, JButton cancel, JComboBox<String> categoryTextArea, JTextField amountTextLabel, JComboBox<String> monthComboBox, JTextField noteTextLabel, UserInterface ui) {
         buttonPanel.add(submit);
         buttonPanel.add(cancel);
 
@@ -93,5 +95,7 @@ public class CreateFrame {
         ui.mainScreen.additionalFrame.setLocationByPlatform(true);
         ui.mainScreen.additionalFrame.setVisible(true);
         ui.mainScreen.additionalFrame.setResizable(false);
+        ui.mainScreen.additionalFrame.setLocationRelativeTo(null);
+
     }
 }
