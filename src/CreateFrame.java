@@ -1,14 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class CreateFrame {
     public JTextField categoryTextArea;
     public JTextField amountTextLabel;
     public JTextField noteTextLabel;
     public JComboBox<String> monthComboBox;
-    public JFrame frame;
     public final UserInterface UI;
     public Font textFieldFont = new Font("Arial", Font.PLAIN, 10);
     public String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -20,100 +18,80 @@ public class CreateFrame {
     public void createFrame() {
         SubmitNewExpenseFunction submitNewExpenseFunction = new SubmitNewExpenseFunction(this, UI);
 
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        EventQueue.invokeLater(() -> {
 
-                Dimension maximumSize = new Dimension(100, 30);
-                Dimension maximumTextSize = new Dimension(100, 20);
-                Insets insets = new Insets(0, 0, 0, 0);
+            ArrayList<JPanel> panelArrayList = UI.mainScreen.createNewFrame();
+            JPanel mainPanel = panelArrayList.get(0);
+            JPanel inputPanel = panelArrayList.get(1);
+            JPanel buttonPanel = panelArrayList.get(2);
 
-                frame = new JFrame("Test");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                JPanel mainPanel = new JPanel();
-                mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-                mainPanel.setOpaque(true);
+            UI.mainScreen.additionalFrame.setTitle("Add New Expense");
 
-                JPanel inputPanel = new JPanel();
-                inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+            JLabel categoryLabel = new JLabel("Category: ");
+            categoryTextArea = new JTextField(10);
+            categoryTextArea.setPreferredSize(UI.mainScreen.maximumTextSize);
+            categoryTextArea.setMaximumSize(UI.mainScreen.maximumTextSize);
+            categoryTextArea.setFont(textFieldFont);
 
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+            JLabel amountLabel = new JLabel("Amount: ");
+            amountTextLabel = new JTextField(10);
+            amountTextLabel.setPreferredSize(UI.mainScreen.maximumTextSize);
+            amountTextLabel.setMaximumSize(UI.mainScreen.maximumTextSize);
+            amountTextLabel.setFont(textFieldFont);
 
+            JLabel monthLabel = new JLabel("Month: ");
+            monthComboBox = new JComboBox<>(months);
+            monthComboBox.setPreferredSize(UI.mainScreen.maximumTextSize);
+            monthComboBox.setMaximumSize(UI.mainScreen.maximumTextSize);
+            monthComboBox.setFont(textFieldFont);
 
-                JLabel categoryLabel = new JLabel("Category: ");
-                categoryTextArea = new JTextField(10);
-                categoryTextArea.setPreferredSize(maximumTextSize);
-                categoryTextArea.setMaximumSize(maximumTextSize);
-                categoryTextArea.setFont(textFieldFont);
+            JLabel noteLabel = new JLabel("Note: ");
+            noteTextLabel = new JTextField(10);
 
-                JLabel amountLabel = new JLabel("Amount: ");
-                amountTextLabel = new JTextField(10);
-                amountTextLabel.setPreferredSize(maximumTextSize);
-                amountTextLabel.setMaximumSize(maximumTextSize);
-                amountTextLabel.setFont(textFieldFont);
+            noteTextLabel.setPreferredSize(UI.mainScreen.maximumTextSize);
+            noteTextLabel.setMaximumSize(UI.mainScreen.maximumTextSize);
 
-                JLabel monthLabel = new JLabel("Month: ");
-                monthComboBox = new JComboBox<>(months);
-                monthComboBox.setPreferredSize(maximumTextSize);
-                monthComboBox.setMaximumSize(maximumTextSize);
-                monthComboBox.setFont(textFieldFont);
+            noteTextLabel.setFont(textFieldFont);
 
-                JLabel noteLabel = new JLabel("Note: ");
-                noteTextLabel = new JTextField(10);
+            JButton submit = new JButton("Submit");
+            JButton cancel = new JButton("Cancel");
 
-                noteTextLabel.setPreferredSize(maximumTextSize);
-                noteTextLabel.setMaximumSize(maximumTextSize);
+            submit.setMaximumSize(UI.mainScreen.maximumButtonSize);
+            cancel.setMaximumSize(UI.mainScreen.maximumButtonSize);
 
-                noteTextLabel.setFont(textFieldFont);
+            submit.setMargin(UI.mainScreen.insets);
+            cancel.setMargin(UI.mainScreen.insets);
+            submit.addActionListener(submitNewExpenseFunction);
+            cancel.addActionListener(_ -> UI.mainScreen.additionalFrame.dispose());
 
-                JButton submit = new JButton("Submit");
-                JButton cancel = new JButton("Cancel");
-
-                submit.setMaximumSize(maximumSize);
-                cancel.setMaximumSize(maximumSize);
-
-                submit.setMargin(insets);
-                cancel.setMargin(insets);
-                submit.addActionListener(submitNewExpenseFunction);
-                cancel.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        frame.dispose();
-                    }
-                });
-
-                buttonPanel.add(submit);
-                buttonPanel.add(cancel);
-
-
-                inputPanel.add(categoryLabel);
-                inputPanel.add(categoryTextArea);
-                inputPanel.add(Box.createHorizontalStrut(10));
-                inputPanel.add(amountLabel);
-                inputPanel.add(amountTextLabel);
-                inputPanel.add(Box.createHorizontalStrut(10));
-                inputPanel.add(monthLabel);
-                inputPanel.add(monthComboBox);
-                inputPanel.add(Box.createHorizontalStrut(10));
-                inputPanel.add(noteLabel);
-                inputPanel.add(noteTextLabel);
-                inputPanel.add(Box.createHorizontalStrut(10));
-                mainPanel.add(inputPanel);
-                mainPanel.add(buttonPanel);
-
-                frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-                frame.setSize(600, 100);
-                frame.setLocationByPlatform(true);
-                frame.setVisible(true);
-                frame.setResizable(false);
-//                input.requestFocus();
-            }
+            DrawNewFrame(mainPanel, inputPanel, buttonPanel, categoryLabel, amountLabel, monthLabel, noteLabel, submit, cancel, categoryTextArea, amountTextLabel, monthComboBox, noteTextLabel, UI);
         });
+    }
+
+    static void DrawNewFrame(JPanel mainPanel, JPanel inputPanel, JPanel buttonPanel, JLabel categoryLabel, JLabel amountLabel, JLabel monthLabel, JLabel noteLabel, JButton submit, JButton cancel, JTextField categoryTextArea, JTextField amountTextLabel, JComboBox<String> monthComboBox, JTextField noteTextLabel, UserInterface ui) {
+        buttonPanel.add(submit);
+        buttonPanel.add(cancel);
+
+
+        inputPanel.add(categoryLabel);
+        inputPanel.add(categoryTextArea);
+        inputPanel.add(Box.createHorizontalStrut(10));
+        inputPanel.add(amountLabel);
+        inputPanel.add(amountTextLabel);
+        inputPanel.add(Box.createHorizontalStrut(10));
+        inputPanel.add(monthLabel);
+        inputPanel.add(monthComboBox);
+        inputPanel.add(Box.createHorizontalStrut(10));
+        inputPanel.add(noteLabel);
+        inputPanel.add(noteTextLabel);
+        inputPanel.add(Box.createHorizontalStrut(10));
+        mainPanel.add(inputPanel);
+        mainPanel.add(buttonPanel);
+
+        ui.mainScreen.additionalFrame.getContentPane().add(BorderLayout.CENTER, mainPanel);
+        ui.mainScreen.additionalFrame.setSize(600, 100);
+        ui.mainScreen.additionalFrame.setLocationByPlatform(true);
+        ui.mainScreen.additionalFrame.setVisible(true);
+        ui.mainScreen.additionalFrame.setResizable(false);
     }
 }

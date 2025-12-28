@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -7,11 +9,9 @@ public class TitleScreen {
 
     final private UserInterface UI;
     JButton startButton;
-    StartButton startFunction;
 
     public TitleScreen(UserInterface UI) {
         this.UI = UI;
-        startFunction = new StartButton(this.UI);
     }
 
     public void draw() {
@@ -46,9 +46,10 @@ public class TitleScreen {
         startButton = new JButton("Start");
         startButton.setFont(UI.buttonFont);
         startButton.setFocusable(false);
-        startButton.addActionListener(startFunction);
         startButton.setBounds((UI.screenWidth / 2) - 50, UI.screenHeight - 150, 100, 30);
         startButton.setHorizontalAlignment(SwingConstants.CENTER);
+
+        startButton.addActionListener(e -> UI.drawMainScreen());
         mainPanel.add(startButton);
 
         UI.jframe.add(mainPanel);

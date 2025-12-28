@@ -5,13 +5,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainScreen {
 
-    final private UserInterface UI;
+    final public UserInterface UI;
     final private Font buttonFont = new Font("Arial", Font.PLAIN, 10);
+    public ArrayList<Expense> filteredList = new ArrayList<>();
     public JTable table;
     public Object[][] dataObject;
+    public JFrame additionalFrame;
+    public Dimension maximumButtonSize = new Dimension(100, 30);
+    public Dimension maximumTextSize = new Dimension(100, 20);
+    public Insets insets = new Insets(0, 0, 0, 0);
+    final private ActionListener deleteExpenseFunction = new DeleteExpenseFunction(this);
+    FilterFrame filterFrame = new FilterFrame(this);
+    FilterDateFrame filterDateFrame = new FilterDateFrame(this);
     JPanel mainPanel = new JPanel(new BorderLayout());
     JPanel headerPanel = new JPanel();
     JPanel sideBarPanel = new JPanel();
@@ -52,7 +61,7 @@ public class MainScreen {
         //draw borders
         drawHeader();
         drawSideBar();
-        drawCenterPanel();
+        drawCenterPanel(ExpenseRepository.dataList);
 
         //add mainPanel to frame
         UI.jframe.add(mainPanel);
@@ -60,27 +69,32 @@ public class MainScreen {
         UI.jframe.repaint();
     }
 
-    public void drawCenterPanel() {
-        //Centerpanel layout
-        centerPanel.setLayout(new BorderLayout());
-
+    public JTable drawTable(ArrayList<Expense> dataList) {
         //set up column names of table
         String[] columnNames = {"Category", "Amount", "Month", "Note"};
 
         //initialize dataobject, length of which is size of our expense list
-        dataObject = new Object[ExpenseRepository.dataList.size()][4];
+        dataObject = new Object[dataList.size()][4];
         //iterate through expense list
         //add expense information to dataObject
-        for (int i = 0; i < ExpenseRepository.dataList.size(); i++) {
+        for (int i = 0; i < dataList.size(); i++) {
             for (int j = 0; j < 4; j++) {
-                Object[] object = ExpenseRepository.dataList.get(i).toObject();
+                Object[] object = dataList.get(i).toObject();
                 dataObject[i][j] = object[j];
 
             }
         }
 
+        return new JTable(dataObject, columnNames);
+
+    }
+
+    public void drawCenterPanel(ArrayList<Expense> dataList) {
+        //Centerpanel layout
+        centerPanel.setLayout(new BorderLayout());
+
         //Display dataObject in a table
-        table = new JTable(dataObject, columnNames);
+        table = drawTable(dataList);
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
 
@@ -142,24 +156,37 @@ public class MainScreen {
         JButton addExpense = new JButton("Add Expense");
         JButton editExpense = new JButton("Edit Expense");
         JButton deleteExpense = new JButton("Delete Expense");
+        JButton resetFilter = new JButton("Reset Filter");
 
         filterCategory.setRolloverEnabled(false);
         filterDate.setRolloverEnabled(false);
         addExpense.setRolloverEnabled(false);
         editExpense.setRolloverEnabled(false);
         deleteExpense.setRolloverEnabled(false);
+        resetFilter.setRolloverEnabled(false);
 
         //add action listeners
         addExpense.addActionListener(new AddButtonFunction(new CreateFrame(UI)));
-        editExpense.addActionListener(new EditButtonFunction(new CreateEditFrame(UI, this)));
-        deleteExpense.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ExpenseRepository.removeExpense(table.getSelectedRow());
-                UI.clearInterface();
-                UI.drawMainScreen();
-            }
+        editExpense.addActionListener(new EditButtonFunction(new CreateEditFrame(UI, this), this));
+
+        //Delete Expense Action Listener
+        deleteExpense.addActionListener(deleteExpenseFunction);
+
+        //Filter Category Action Listener
+        filterCategory.addActionListener(e -> filterFrame.createFrame());
+
+        //resetFilter action listener
+
+        resetFilter.addActionListener(_ -> {
+            centerPanel.removeAll();
+
+            drawCenterPanel(ExpenseRepository.dataList);
+            UI.jframe.revalidate();
+            UI.jframe.repaint();
         });
+
+        //filterDate action listener
+        filterDate.addActionListener(e -> filterDateFrame.createFrame());
 
         //Define Dimensions
         Insets insets = new Insets(0, 0, 0, 0);
@@ -171,18 +198,21 @@ public class MainScreen {
         addExpense.setMaximumSize(maxSize);
         editExpense.setMaximumSize(maxSize);
         deleteExpense.setMaximumSize(maxSize);
+        resetFilter.setMaximumSize(maxSize);
 
         filterCategory.setAlignmentX(Component.CENTER_ALIGNMENT);
         filterDate.setAlignmentX(Component.CENTER_ALIGNMENT);
         addExpense.setAlignmentX(Component.CENTER_ALIGNMENT);
         editExpense.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteExpense.setAlignmentX(Component.CENTER_ALIGNMENT);
+        resetFilter.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         filterCategory.setFont(buttonFont);
         filterDate.setFont(buttonFont);
         addExpense.setFont(buttonFont);
         editExpense.setFont(buttonFont);
         deleteExpense.setFont(buttonFont);
+        resetFilter.setFont(buttonFont);
 
 
         filterCategory.setMargin(insets);
@@ -190,25 +220,58 @@ public class MainScreen {
         addExpense.setMargin(insets);
         editExpense.setMargin(insets);
         deleteExpense.setMargin(insets);
+        resetFilter.setMargin(insets);
 
         //Layout sidePanel buttons
 
         sideBarPanel.add(Box.createVerticalStrut(20));
-        sideBarPanel.add(filterCategory);
-        sideBarPanel.add(Box.createVerticalStrut(10));
-
-        sideBarPanel.add(filterDate);
-        sideBarPanel.add(Box.createVerticalStrut(10));
-
         sideBarPanel.add(addExpense);
-        sideBarPanel.add(Box.createVerticalStrut(10));
 
+        sideBarPanel.add(Box.createVerticalStrut(10));
         sideBarPanel.add(editExpense);
-        sideBarPanel.add(Box.createVerticalStrut(10));
 
+        sideBarPanel.add(Box.createVerticalStrut(10));
         sideBarPanel.add(deleteExpense);
-        sideBarPanel.add(Box.createVerticalStrut(10));
 
+        sideBarPanel.add(Box.createVerticalStrut(10));
+        sideBarPanel.add(filterCategory);
+
+        sideBarPanel.add(Box.createVerticalStrut(10));
+        sideBarPanel.add(filterDate);
+
+
+
+        sideBarPanel.add(Box.createVerticalStrut(10));
+        sideBarPanel.add(resetFilter);
+
+
+    }
+
+    public ArrayList<JPanel> createNewFrame() {
+
+
+
+        additionalFrame = new JFrame();
+        additionalFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setOpaque(true);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        ArrayList<JPanel> panelList = new ArrayList<>();
+        panelList.add(mainPanel);
+        panelList.add(inputPanel);
+        panelList.add(buttonPanel);
+        return panelList;
     }
 
 }

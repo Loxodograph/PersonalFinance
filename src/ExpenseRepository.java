@@ -12,15 +12,15 @@ public class ExpenseRepository {
         dataList.add(ExpenseRepository.createExpense(category, amount, month, note));
     }
 
-    public static void editExpense(int index, String category, double amount, String month, String note) {
-        dataList.get(index).setCategory(category);
-        dataList.get(index).setAmount(amount);
-        dataList.get(index).setMonth(month);
-        dataList.get(index).setNote(note);
+    public static void editExpense(Expense expense, String category, double amount, String month, String note) {
+        expense.setCategory(category);
+        expense.setAmount(amount);
+        expense.setMonth(month);
+        expense.setNote(note);
     }
 
-    public static void removeExpense(int index) {
-        dataList.remove(index);
+    public static void removeExpense(Expense expense) {
+        dataList.remove(expense);
     }
 }
 

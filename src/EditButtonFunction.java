@@ -3,8 +3,10 @@ import java.awt.event.ActionListener;
 
 public class EditButtonFunction implements ActionListener {
     public CreateEditFrame createEditFrame;
-    public EditButtonFunction(CreateEditFrame createEditFrame) {
+    public MainScreen mainScreen;
+    public EditButtonFunction(CreateEditFrame createEditFrame, MainScreen mainScreen) {
         this.createEditFrame = createEditFrame;
+        this.mainScreen = mainScreen;
 
     }
     @Override

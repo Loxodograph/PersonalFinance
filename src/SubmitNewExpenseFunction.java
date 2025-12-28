@@ -18,7 +18,7 @@ public class SubmitNewExpenseFunction implements ActionListener {
         String noteText = expensePanel.noteTextLabel.getText();
 
         ExpenseRepository.addExpense(categoryText, amount, monthText, noteText);
-        expensePanel.frame.dispose();
+        UI.mainScreen.additionalFrame.dispose();
         UI.clearInterface();
         UI.drawMainScreen();
     }

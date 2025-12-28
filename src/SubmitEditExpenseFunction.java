@@ -1,7 +1,5 @@
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class SubmitEditExpenseFunction implements ActionListener {
 
@@ -17,17 +15,32 @@ public class SubmitEditExpenseFunction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Expense selectedExpense;
         String categoryText = expensePanel.categoryTextArea.getText();
         double amount = Double.parseDouble(expensePanel.amountTextLabel.getText());
         String monthText = String.valueOf(expensePanel.monthComboBox.getSelectedItem());
         String noteText = expensePanel.noteTextLabel.getText();
 
         int rowIndex = mainScreen.table.getSelectedRow();
+        if (!mainScreen.filteredList.isEmpty()) {
+            selectedExpense = mainScreen.filteredList.get(rowIndex);
+        } else {
+            selectedExpense = ExpenseRepository.dataList.get(rowIndex);
+        }
 
-        ExpenseRepository.editExpense(rowIndex, categoryText, amount, monthText, noteText);
+        ExpenseRepository.editExpense(selectedExpense, categoryText, amount, monthText, noteText);
 
-        expensePanel.frame.dispose();
-        UI.clearInterface();
-        UI.drawMainScreen();
+        mainScreen.additionalFrame.dispose();
+        mainScreen.centerPanel.removeAll();
+        if (!mainScreen.filteredList.isEmpty()) {
+            mainScreen.drawCenterPanel(mainScreen.filteredList);
+        } else {
+            mainScreen.drawCenterPanel(ExpenseRepository.dataList);
+        }
+
+        UI.jframe.revalidate();
+        UI.jframe.repaint();
+
+
     }
 }
